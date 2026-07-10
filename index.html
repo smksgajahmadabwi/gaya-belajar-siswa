@@ -285,10 +285,10 @@
                 align-items: flex-start;
             }
             .stats-column {
-                flex: 1;
+                flex: 1.2;
             }
             .chart-column {
-                flex: 1;
+                flex: 0.8;
                 position: sticky;
                 top: 20px;
             }
@@ -413,7 +413,7 @@
 
     <header>
         <div class="header-content">
-            <img class="logo" src="gm.jpg" alt="Logo SMK Gajah Mada" onerror="this.src='https://placehold.co/100x100/001f54/ffffff?text=GM'">
+            <img class="logo" src="gajah-mada-logo.png" alt="Logo SMK Gajah Mada" onerror="this.src='https://placehold.co/100x100/001f54/ffffff?text=GM'">
             <div class="school-name">SMK Gajah Mada Banyuwangi</div>
             <div class="test-title">Tes Gaya Belajar Siswa</div>
         </div>
@@ -475,7 +475,7 @@
         <!-- Wadah Soal Tes -->
         <form id="test-form">
             <div id="questions-wrapper">
-                <!-- Pertanyaan akan digenerate otomatis oleh Javascript -->
+                <!-- Pertanyaan di-generate dinamis di sini -->
             </div>
 
             <!-- Tombol Navigasi Halaman Tes -->
@@ -491,7 +491,7 @@
             <h3 style="color: var(--primary-blue); text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.75rem;">Hasil Pemetaan Gaya Belajar</h3>
             
             <div style="margin-top: 1rem; font-size: 0.95rem; text-align: center;">
-                Halo <strong id="res-student-name"></strong> (<span id="res-student-meta"></span>), berikut adalah hasil analisis kecenderungan gaya belajar Anda:
+                Halo <strong id="res-student-name"></strong> (<span id="res-student-meta"></span>), berikut adalah hasil pemetaan gaya belajar Anda:
             </div>
 
             <div class="dashboard-layout">
@@ -540,277 +540,277 @@
     </div>
 
     <script>
-        // Data Soal Tes Bersifat Umum (30 Pertanyaan)
-        // Opsi 1 = V (Visual), Opsi 2 = A (Auditori), Opsi 3 = R (Read/Write), Opsi 4 = K (Kinestetik)
+        // 30 Pertanyaan Ringan dan Santai tentang Aktivitas Sehari-hari
+        // Konsisten: Opsi 1 = V, Opsi 2 = A, Opsi 3 = R, Opsi 4 = K
         const questionsData = [
             {
-                q: "Saat mempelajari cara kerja sesuatu yang baru (seperti alat, aplikasi, atau prosedur kerja), saya lebih memilih untuk...",
+                q: "Ketika ada remedial dan harus memperbaiki nilai ujian, aku biasanya:",
                 options: [
-                    { t: "Mengamati diagram alur, gambar panduan, atau petunjuk bentuk grafis.", val: "V" },
-                    { t: "Mendengarkan instruksi penjelasan lisan secara langsung dari orang lain.", val: "A" },
-                    { t: "Membaca penjelasan detail tertulis dari modul atau buku panduan.", val: "R" },
-                    { t: "Mencoba mengotak-atik atau menguji langsung objek tersebut.", val: "K" }
+                    { t: "Melihat kembali coretan rumus, peta konsep, atau bagan ringkasan bergambar.", val: "V" },
+                    { t: "Mengajak teman berdiskusi atau mendengarkan penjelasan ulang dari guru secara lisan.", val: "A" },
+                    { t: "Membaca ulang lembar modul materi pelajaran atau tulisan catatan buku teks.", val: "R" },
+                    { t: "Berlatih mengerjakan soal baru secara berulang-ulang dengan menulis coretan latihan.", val: "K" }
                 ]
             },
             {
-                q: "Ketika mencari jalan menuju lokasi baru yang belum pernah saya datangi, saya lebih suka...",
+                q: "Jika aku mengajarkan hal baru kepada seseorang, aku cenderung:",
                 options: [
-                    { t: "Membaca peta jalan atau menggunakan peta navigasi visual di GPS.", val: "V" },
-                    { t: "Bertanya langsung kepada warga setempat untuk dipandu petunjuk lisan.", val: "A" },
-                    { t: "Membaca urutan penunjuk jalan tertulis langkah-demi-langkah.", val: "R" },
-                    { t: "Berjalan menyusuri lokasi mengikuti insting spasial atau mengandalkan tanda fisik jalan.", val: "K" }
+                    { t: "Menggambar skema kasar, bagan alur, atau menunjukkan gambar pendukung.", val: "V" },
+                    { t: "Menjelaskan langkah-langkahnya secara langsung lewat obrolan lisan.", val: "A" },
+                    { t: "Menuliskan urutan petunjuk kerja di kertas catatan agar bisa mereka baca.", val: "R" },
+                    { t: "Mempraktikkan gerakannya secara langsung di depan mereka agar bisa ditiru.", val: "K" }
                 ]
             },
             {
-                q: "Di kelas, saya paling mudah menyerap informasi pelajaran jika pengajar...",
+                q: "Ketika berkonsentrasi, aku paling suka:",
                 options: [
-                    { t: "Menampilkan slide presentasi interaktif bergambar, skema, atau video.", val: "V" },
-                    { t: "Menerangkan dengan cerita, diskusi kelompok, atau forum tanya-jawab.", val: "A" },
-                    { t: "Membagikan materi tertulis berupa lembar catatan, rangkuman, atau buku pelajaran.", val: "R" },
-                    { t: "Mengajak melakukan simulasi, praktik fisik, eksperimen, atau aktivitas bergerak.", val: "K" }
+                    { t: "Berada di ruangan yang tertata bersih, rapi, dan teratur di mata.", val: "V" },
+                    { t: "Keadaan ruangan yang sunyi senyap dan bebas dari kebisingan suara sekitar.", val: "A" },
+                    { t: "Membaca buku acuan atau membuat catatan tertulis untuk memandu konsentrasi.", val: "R" },
+                    { t: "Menggoyang-goyangkan kaki, memutar pena di tangan, atau duduk di posisi santai.", val: "K" }
                 ]
             },
             {
-                q: "Saat menceritakan pengalaman seru kepada rekan saya, cara yang paling natural bagi saya adalah...",
+                q: "Ketika merasa cemas, aku cenderung:",
                 options: [
-                    { t: "Memvisualisasikan cerita dengan bahasa tubuh yang berekspresi.", val: "V" },
-                    { t: "Memainkan intonasi suara, tiruan suara objek, dan kecepatan bicara.", val: "A" },
-                    { t: "Menuliskan detail kronologi kejadiannya secara rapi lewat pesan obrolan tertulis.", val: "R" },
-                    { t: "Memperagakan kembali aktivitas gerakan tubuh dari peristiwa tersebut.", val: "K" }
+                    { t: "Menatap ke satu titik pandangan kosong atau mencoba melamun.", val: "V" },
+                    { t: "Mengajak orang lain mengobrol tanpa henti atau mendengarkan musik.", val: "A" },
+                    { t: "Menuliskan coretan tidak teratur atau membaca artikel bebas di ponsel.", val: "R" },
+                    { t: "Mondar-mandir di ruangan atau terus mengetukkan jari tangan ke meja.", val: "K" }
                 ]
             },
             {
-                q: "Bila saya mulai merasa bosan dalam pelajaran yang berdurasi panjang, saya biasanya...",
+                q: "Jika aku pertama kali berkenalan dengan seseorang, aku biasanya:",
                 options: [
-                    { t: "Menggambar corat-coret sketsa gambar acak di pinggir buku tulis.", val: "V" },
-                    { t: "Mengajak teman sebangku mengobrol atau bersenandung pelan.", val: "A" },
-                    { t: "Membaca artikel bebas, buku lain, atau info tulisan di gawai.", val: "R" },
-                    { t: "Sering mengubah posisi duduk atau sesekali izin berjalan ke toilet.", val: "K" }
+                    { t: "Sangat mudah mengingat rupa wajah mereka, meskipun lupa nama lengkapnya.", val: "V" },
+                    { t: "Mengingat intonasi suara unik mereka atau aksen khas saat berbicara.", val: "A" },
+                    { t: "Mengingat ejaan nama lengkap mereka atau tulisan nama akun media sosialnya.", val: "R" },
+                    { t: "Mengingat gaya jabat tangan mereka atau momen aktivitas fisik bersamanya.", val: "K" }
                 ]
             },
             {
-                q: "Di waktu luang, kegiatan santai yang paling menyenangkan bagi saya adalah...",
+                q: "Saat memilih peralatan rumah tangga (misal kompor, dispenser, kipas angin), aku suka:",
                 options: [
-                    { t: "Menonton film, video pendek di internet, atau bermain game visual.", val: "V" },
-                    { t: "Mendengarkan musik, siaran podcast, audio drama, atau mengobrol santai.", val: "A" },
-                    { t: "Membaca novel, buku, artikel berita, atau menulis buku harian.", val: "R" },
-                    { t: "Berolahraga ringan, membuat kerajinan, menari, atau beraktivitas luar ruangan.", val: "K" }
+                    { t: "Desain fisiknya yang indah, modern, dan pilihan warna yang menarik.", val: "V" },
+                    { t: "Suara operasinya yang halus/tenang atau mempunyai alarm petunjuk suara.", val: "A" },
+                    { t: "Informasi detail spesifikasi fungsi di brosur dan buku panduannya lengkap.", val: "R" },
+                    { t: "Mudah dioperasikan, tombol fisiknya pas, dan nyaman digunakan saat dipegang.", val: "K" }
                 ]
             },
             {
-                q: "Saat harus mengingat poin-poin penting materi ujian, saya paling efektif dengan cara...",
+                q: "Jika aku menjelaskan sesuatu kepada seseorang, aku cenderung:",
                 options: [
-                    { t: "Membayangkan tata letak tulisan, warna spidol penjelas, atau gambar di buku.", val: "V" },
-                    { t: "Melafalkan materi tersebut bersuara keras berkali-kali ke diri sendiri.", val: "A" },
-                    { t: "Menuliskan kembali pokok-pokok pikiran materi secara terstruktur di kertas.", val: "R" },
-                    { t: "Berjalan mondar-mandir di ruangan sembari mengingat poin materi.", val: "K" }
+                    { t: "Menggambar corat-coret bentuk sketsa atau menunjuk langsung ke benda di sekitar.", val: "V" },
+                    { t: "Menyampaikan lewat ucapan lisan secara gamblang dengan analogi suara.", val: "A" },
+                    { t: "Mengetikkan pesan teks secara runut atau menuliskan daftar poinnya di kertas.", val: "R" },
+                    { t: "Mengajak mereka memegang, menggerakkan, dan mencobanya bersama-sama secara nyata.", val: "K" }
                 ]
             },
             {
-                q: "Ketika membeli perangkat baru (seperti ponsel atau alat kerja), saya akan...",
+                q: "Jika aku marah, aku cenderung:",
                 options: [
-                    { t: "Mencari video ulasan yang memperlihatkan visualisasi fitur produk.", val: "V" },
-                    { t: "Mendengarkan petunjuk lisan dari rekomendasi teman atau penjual.", val: "A" },
-                    { t: "Membaca buku teks instruksi manual spesifikasi produk terlebih dahulu.", val: "R" },
-                    { t: "Langsung menyalakan dan mencoba menekan semua tombol untuk mengetes fungsinya.", val: "K" }
+                    { t: "Memperlihatkan raut wajah cemberut, masam, atau menghindari kontak mata.", val: "V" },
+                    { t: "Melampiaskannya lewat kata-kata ketus, menggerutu panjang lebar, atau berteriak.", val: "A" },
+                    { t: "Memilih diam lalu menumpahkan amarah lewat pesan tulisan pribadi.", val: "R" },
+                    { t: "Mengepalkan jemari tangan, meremas benda di dekatku, atau melangkah pergi cepat.", val: "K" }
                 ]
             },
             {
-                q: "Ketika harus menyelesaikan suatu tugas kelompok, peran yang paling saya nikmati adalah...",
+                q: "Saat berkunjung ke pusat perbelanjaan baru, hal yang pertama menarik perhatianku:",
                 options: [
-                    { t: "Merancang presentasi visual, merapikan dokumen kerja, atau mendesain poster proyek.", val: "V" },
-                    { t: "Mewakili kelompok untuk menjelaskan ide secara lisan di depan penguji.", val: "A" },
-                    { t: "Menyusun isi naskah, membuat riset literatur, atau menulis laporan tertulis.", val: "R" },
-                    { t: "Merakit contoh fisik proyek, membuat peraga, atau menguji coba kerja produk.", val: "K" }
+                    { t: "Penataan lampu dekorasi mall, warna etalase toko, atau spanduk gambar.", val: "V" },
+                    { t: "Alunan musik di mall, keramaian obrolan orang, atau gemericik air mancur.", val: "A" },
+                    { t: "Papan penunjuk lokasi, nama gerai toko, atau peta teks panduan mall.", val: "R" },
+                    { t: "Suhu ruangan ber-AC yang sejuk, keempukan tempat duduk, atau luasnya lantai jalan.", val: "K" }
                 ]
             },
             {
-                q: "Jika suasana hati saya sedang buruk atau marah, ekspresi terdekat saya adalah...",
+                q: "Aku paling banyak menghabiskan waktu luangku dengan:",
                 options: [
-                    { t: "Memperlihatkan raut wajah masam atau menghindari pandangan orang lain.", val: "V" },
-                    { t: "Menggerutu kesal, menghela nafas panjang, atau berbicara sendiri dengan nada kesal.", val: "A" },
-                    { t: "Menulis curahan hati di kertas catatan pribadi atau buku harian.", val: "R" },
-                    { t: "Mengepalkan tangan, mengetuk-ngetukkan jari, atau berjalan keluar menjauh.", val: "K" }
+                    { t: "Menonton film/video pendek di media sosial atau melihat-lihat foto estetik.", val: "V" },
+                    { t: "Mendengarkan playlist lagu favorit, siaran podcast, atau bercengkerama telepon.", val: "A" },
+                    { t: "Membaca komik web, buku bacaan artikel, novel, atau mengetik harian di media sosial.", val: "R" },
+                    { t: "Berolahraga ringan, jalan-jalan ke luar rumah, atau merakit prakarya tangan.", val: "K" }
                 ]
             },
             {
-                q: "Saat mendengarkan penyampaian yang panjang, konsentrasi saya paling mudah terganggu oleh...",
+                q: "Ketika teringat momen manis bersama sahabat di masa lalu, aku biasanya:",
                 options: [
-                    { t: "Gerakan orang lalu-lalang atau kilatan cahaya di sekitar.", val: "V" },
-                    { t: "Suara bising, bisikan orang di samping, atau gemuruh kipas angin.", val: "A" },
-                    { t: "Melihat coretan tulisan acak atau buku yang tumpuk-menumpuk berantakan.", val: "R" },
-                    { t: "Kursi yang tidak nyaman untuk diduduki lama atau suhu udara yang kurang pas.", val: "K" }
+                    { t: "Membayangkan wujud visual tempat liburan atau foto wajah ceria mereka.", val: "V" },
+                    { t: "Teringat canda tawa lepas mereka atau musik pengiring saat berkumpul.", val: "A" },
+                    { t: "Teringat rincian tanggal, hari libur saat itu, atau ucapan selamat tertulis.", val: "R" },
+                    { t: "Teringat kehangatan suasana jabat tangan erat atau pelukan kebersamaan.", val: "K" }
                 ]
             },
             {
-                q: "Bila saya harus mengerjakan tugas mandiri yang sulit, saya sangat terbantu jika...",
+                q: "Saat mendengarkan penyampaian teori di kelas, aku paling cepat mengerti jika:",
                 options: [
-                    { t: "Diberikan contoh bentuk gambar atau karya akhir yang sudah jadi.", val: "V" },
-                    { t: "Diberikan panduan lisan yang menerangkan poin evaluasinya secara ringkas.", val: "A" },
-                    { t: "Diberikan selembar kertas petunjuk kerja tertulis langkah demi langkah.", val: "R" },
-                    { t: "Dipandu secara praktis pada langkah awal untuk langsung dicoba.", val: "K" }
+                    { t: "Guru banyak menampilkan gambar ilustrasi visual pendukung di papan tulis.", val: "V" },
+                    { t: "Guru menjelaskan dengan banyak contoh kasus dibalut gaya bicara humoris.", val: "A" },
+                    { t: "Guru membagikan lembar modul berisi ringkasan teks teori secara lengkap.", val: "R" },
+                    { t: "Guru mengajak siswa mengutak-atik model tiruan instrumen sederhana pelajaran.", val: "K" }
                 ]
             },
             {
-                q: "Ketika sedang melakukan kegiatan uji coba atau pembelajaran mandiri, saya merasa percaya diri jika...",
+                q: "Ketika membeli buku novel atau komik baru, bagian awal yang membuatku tertarik adalah:",
                 options: [
-                    { t: "Melihat video peragaan contoh pengerjaan terlebih dahulu.", val: "V" },
-                    { t: "Mendengarkan petunjuk rambu lisan dari instruktur.", val: "A" },
-                    { t: "Membaca modul bacaan kerja atau panduan tertulis.", val: "R" },
-                    { t: "Langsung memegang media kerja dan mencoba melakukannya secara nyata.", val: "K" }
+                    { t: "Desain sampul (cover) buku yang elok dipandang mata dan pemilihan warnanya.", val: "V" },
+                    { t: "Judul bukunya yang terdengar puitis/unik saat diucapkan langsung.", val: "A" },
+                    { t: "Membaca teks ringkasan jalan cerita di sinopsis halaman belakang buku.", val: "R" },
+                    { t: "Ketebalan buku, jenis bahan kertas, atau beratnya buku ketika dipegang.", val: "K" }
                 ]
             },
             {
-                q: "Untuk mengingat suatu istilah asing atau nama bagian-bagian komponen, saya memilih...",
+                q: "Jika sedang bermain game tebak kata (charades), aku lebih nyaman dengan peran:",
                 options: [
-                    { t: "Menggunakan kartu belajar (flashcard) dengan petunjuk visual.", val: "V" },
-                    { t: "Mendengarkan rekaman pelafalan kata tersebut berulang kali.", val: "A" },
-                    { t: "Menulis ulang kosakata beserta definisinya di selembar kertas.", val: "R" },
-                    { t: "Mencoba memperagakan fisik atau gerakan yang menggambarkan arti kata itu.", val: "K" }
+                    { t: "Menggambar corak coretan gambar petunjuk di kertas secara cepat.", val: "V" },
+                    { t: "Memberikan klu suara tiruan, desisan, atau menyenandungkan potongan lagu.", val: "A" },
+                    { t: "Menuliskan beberapa kata kunci rahasia di kertas sebagai jembatan baca.", val: "R" },
+                    { t: "Memperagakan gerakan fisik tubuh secara atraktif agar langsung ditebak.", val: "K" }
                 ]
             },
             {
-                q: "Ketika berada di suatu tempat pameran atau kunjungan belajar, saya cenderung...",
+                q: "Saat merencanakan kegiatan piknik di akhir pekan, hal yang membuatku bersemangat:",
                 options: [
-                    { t: "Memerhatikan tata letak pajangan, dekorasi visual, atau pajangan poster.", val: "V" },
-                    { t: "Mendengarkan penjelasan pengisi pameran atau narasi audio pengarah.", val: "A" },
-                    { t: "Membaca deskripsi teks penjelasan yang ada di setiap sudut stan.", val: "R" },
-                    { t: "Menguji interaksi contoh produk yang dipajang dengan tangan saya.", val: "K" }
+                    { t: "Menjelajahi foto keindahan lanskap alam tujuan piknik di internet.", val: "V" },
+                    { t: "Mengobrol panjang merundingkan ide tempat liburan seru lewat telepon.", val: "A" },
+                    { t: "Membaca tulisan agenda perjalanan (*itinerary*) tempat piknik yang rapi.", val: "R" },
+                    { t: "Menyiapkan perlengkapan ransel, bekal makanan, dan mencoba sepatu olahraga.", val: "K" }
                 ]
             },
             {
-                q: "Saya biasanya lebih cepat mengenali atau mengingat seseorang dari...",
+                q: "Saat menonton video panduan cara membuat resep kue, aku lebih banyak mengamati:",
                 options: [
-                    { t: "Rupa wajah atau cara berpakaiannya, meskipun kadang lupa namanya.", val: "V" },
-                    { t: "Ciri suara atau logat bicaranya yang khas.", val: "A" },
-                    { t: "Tulisan nama di kartu pengenal atau detail biodata tertulisnya.", val: "R" },
-                    { t: "Gaya bersalaman atau interaksi aktivitas bersama dengannya.", val: "K" }
+                    { t: "Tampilan visual adonan kue dan bentuk cantik kue yang sudah matang.", val: "V" },
+                    { t: "Penjelasan suara pembuat kue yang memandu takaran bahan pembuatannya.", val: "A" },
+                    { t: "Teks resep bahan masakan dan urutan angka ukuran di pojok video.", val: "R" },
+                    { t: "Hasrat dalam hati untuk segera menguji cobanya sendiri di dapur rumah.", val: "K" }
                 ]
             },
             {
-                q: "Ketika berhadapan dengan konsep perhitungan atau analisis logika rumit, saya terbantu jika...",
+                q: "Ketika memilih judul film baru untuk ditonton di rumah, aku biasanya:",
                 options: [
-                    { t: "Konsep digambarkan dalam diagram alir, skema, atau grafik berwarna.", val: "V" },
-                    { t: "Langkah penyelesaian dibacakan secara lisan setahap demi setahap.", val: "A" },
-                    { t: "Membaca urutan tulisan rumus dan penjelasan runtut di buku cetak.", val: "R" },
-                    { t: "Menuliskan coretan hitungan secara berulang-ulang di atas kertas buram.", val: "K" }
+                    { t: "Melihat poster gambar utama film atau tayangan video trailer singkatnya.", val: "V" },
+                    { t: "Mendengarkan rekomendasi lisan secara langsung dari teman kelas.", val: "A" },
+                    { t: "Membaca ulasan tertulis singkat dan deskripsi alur cerita film tersebut.", val: "R" },
+                    { t: "Memilih film bergenre petualangan seru yang memicu ketegangan fisik.", val: "K" }
                 ]
             },
             {
-                q: "Saat harus mempersiapkan presentasi di depan kelas, saya cenderung...",
+                q: "Bila aku menemui hambatan saat merakit perabot rumah tangga yang baru dibeli:",
                 options: [
-                    { t: "Menghias tampilan slide presentasi agar rapi dan kaya elemen visual.", val: "V" },
-                    { t: "Berlatih melafalkan pidato atau merekam suara sendiri untuk koreksi tempo.", val: "A" },
-                    { t: "Menulis naskah lengkap atau draf teks pembuka hingga penutup.", val: "R" },
-                    { t: "Berlatih gerakan tubuh, interaksi panggung, dan bahasa tangan yang fleksibel.", val: "K" }
+                    { t: "Mengamati gambar skema rakitan komponen di lembar petunjuk.", val: "V" },
+                    { t: "Menonton video pendek perakitan sambil mendengarkan audio tutorial.", val: "A" },
+                    { t: "Membaca instruksi teks peringatan langkah kerja di buku manual kecil.", val: "R" },
+                    { t: "Langsung mencoba memasang-masangkan baut ke lubang secara mandiri.", val: "K" }
                 ]
             },
             {
-                q: "Saat membaca suatu bacaan (seperti artikel atau buku cerita), saya paling menikmati bagian...",
+                q: "Cara tercepat bagiku untuk mengingat arti kosakata baru bahasa asing adalah:",
                 options: [
-                    { t: "Deskripsi tulisan yang melukiskan rupa suasana atau latar tempat kejadian.", val: "V" },
-                    { t: "Percakapan atau dialog menarik antar tokoh yang tertulis.", val: "A" },
-                    { t: "Gaya penulisan kalimat yang tertata rapi dan kaya akan informasi.", val: "R" },
-                    { t: "Alur kejadian yang berjalan dinamis, penuh aksi, dan ketegangan.", val: "K" }
+                    { t: "Mencocokkan kata asing tersebut dengan foto gambar representasi yang sesuai.", val: "V" },
+                    { t: "Mendengarkan suara lafal kosakata tersebut berulang-ulang.", val: "A" },
+                    { t: "Menuliskan kata asing tersebut beserta artinya di buku saku berulang kali.", val: "R" },
+                    { t: "Menghubungkan arti kata tersebut dengan gerakan isyarat tubuh atau peragaan.", val: "K" }
                 ]
             },
             {
-                q: "Metode diskusi kelompok belajar yang paling saya sukai adalah...",
+                q: "Saat makan malam di kedai makan yang baru dibuka, kenyamananku dipengaruhi oleh:",
                 options: [
-                    { t: "Membagikan materi menggunakan peta pikiran (mind map) warna-warni di kertas.", val: "V" },
-                    { t: "Melakukan adu pendapat atau tanya jawab secara lisan secara bergantian.", val: "A" },
-                    { t: "Membaca lembar pendapat tertulis masing-masing anggota kemudian dirangkum.", val: "R" },
-                    { t: "Merancang alat sederhana, menyimulasikan peran, atau membuat model fisik.", val: "K" }
+                    { t: "Keindahan hiasan lampu gantung, tata letak meja makan, atau estetiknya kedai.", val: "V" },
+                    { t: "Suara instrumen musik pengiring yang santai atau riuh obrolan ramah.", val: "A" },
+                    { t: "Kelengkapan teks daftar menu makanan beserta keterangan harga.", val: "R" },
+                    { t: "Keempukan kursi makan, kesejukan AC ruangan, atau tekstur sendok yang digunakan.", val: "K" }
                 ]
             },
             {
-                q: "Saat mencoba mengingat nomor kontak atau kode sandi, saya lebih memilih...",
+                q: "Ketika menceritakan cerita lucu ke teman dekat, aku merasa puas jika:",
                 options: [
-                    { t: "Mengingat-ingat letak angka tersebut saat diketikkan atau wujud fisiknya.", val: "V" },
-                    { t: "Melafalkan angka demi angka dengan intonasi ucapan tertentu.", val: "A" },
-                    { t: "Menuliskan deretan angka tersebut di selembar kertas catatan kecil.", val: "R" },
-                    { t: "Mengetikkan langsung tombol-tombol angka tersebut berulang kali di papan tombol.", val: "K" }
+                    { t: "Mereka melihat gestur ekspresi jenaka wajahku lalu tertawa geli.", val: "V" },
+                    { t: "Mereka tertawa karena tiruan suara konyol atau perubahan nada bicaraku.", val: "A" },
+                    { t: "Mereka merespons pesan teks cerita lucu yang kukirim lewat pesan chat.", val: "R" },
+                    { t: "Aku menceritakannya sembari bersenda gurau aktif menggerakkan badan.", val: "K" }
                 ]
             },
             {
-                q: "Ketika diberikan perbaikan atas kesalahan dalam tugas saya, saya lebih senang bila...",
+                q: "Saat dihadapkan pada komputer baru di laboratorium sekolah, aku spontan:",
                 options: [
-                    { t: "Kesalahan saya ditandai dengan warna kontras agar langsung dikenali kerusakannya.", val: "V" },
-                    { t: "Dipanggil secara personal lalu mendengarkan kritik penjelasan lisan pengajar.", val: "A" },
-                    { t: "Menerima catatan ulasan kritik tertulis di lembar tugas secara rinci.", val: "R" },
-                    { t: "Ditunjukkan secara langsung prosedur perbaikan yang benar untuk ditiru fisik.", val: "K" }
+                    { t: "Mengamati kebersihan bodi komputer, desain papan tik, atau gambar layar awal.", val: "V" },
+                    { t: "Mendengarkan bunyi kipas komputer atau melodi sambutan sistem.", val: "A" },
+                    { t: "Membaca teks rincian spesifikasi prosesor yang biasanya ditempel di bodi.", val: "R" },
+                    { t: "Mencoba mengetikkan tombol-tombol pada papan tik untuk merasai kelenturannya.", val: "K" }
                 ]
             },
             {
-                q: "Saya merasa sangat terlibat aktif di dalam suatu forum pelajaran ketika pengajar...",
+                q: "Saat berbelanja pakaian baru untuk bepergian, aku membelinya karena:",
                 options: [
-                    { t: "Menayangkan animasi, infografis, atau dokumenter pendek.", val: "V" },
-                    { t: "Mengisahkan pengalaman profesionalnya secara lisan.", val: "A" },
-                    { t: "Memberikan waktu tenang mandiri untuk menganalisis teks bacaan modul.", val: "R" },
-                    { t: "Mengajak bermain peran (role-play), melakukan penataan instrumen, atau gerak fisik.", val: "K" }
+                    { t: "Kombinasi warnanya tampak serasi dan terlihat bagus di cermin saat dicoba.", val: "V" },
+                    { t: "Menerima pujian perkataan secara lisan dari orang lain saat mengujinya.", val: "A" },
+                    { t: "Membaca keterangan kualitas bahan, label merk pakaian, dan potongan harganya.", val: "R" },
+                    { t: "Bahannya terasa lembut, sejuk di kulit, dan leluasa saat dipakai berjalan.", val: "K" }
                 ]
             },
             {
-                q: "Sebelum memulai kegiatan piknik atau perjalanan wisata, saya terlebih dahulu...",
+                q: "Ketika belajar bersama dalam kelompok belajar kelas, aku paling menyukai bagian:",
                 options: [
-                    { t: "Melihat galeri foto atau video keindahan lokasi tujuan.", val: "V" },
-                    { t: "Mengobrol lewat telepon dengan rekan perjalanan untuk menyusun rute.", val: "A" },
-                    { t: "Menulis urutan perjalanan (itinerary) yang terencana rapi di kertas.", val: "R" },
-                    { t: "Mempersiapkan barang bawaan dalam tas dan menguji ketangguhan fisik alat bawa.", val: "K" }
+                    { t: "Memerhatikan pemaparan bagan atau skema pembagian kerja tim di kertas besar.", val: "V" },
+                    { t: "Saling berdebat argumen secara lisan membahas jalan keluar masalah materi.", val: "A" },
+                    { t: "Membaca rujukan modul materi kemudian menulis rangkuman data bersama.", val: "R" },
+                    { t: "Membuat alat peraga fisik proyek bersama atau melakukan simulasi praktik.", val: "K" }
                 ]
             },
             {
-                q: "Jika belajar mandiri di rumah, hal terpenting yang menjaga konsentrasi saya tetap stabil adalah...",
+                q: "Aku paling mudah untuk melupakan:",
                 options: [
-                    { t: "Pencahayaan ruang belajar yang cukup terang dan rapi dipandang mata.", val: "V" },
-                    { t: "Suasana sekitar yang sunyi dari bising knalpot atau obrolan orang.", val: "A" },
-                    { t: "Kelengkapan modul cetak, buku tulis, dan literatur pendukung.", val: "R" },
-                    { t: "Duduk di kursi yang empuk, nyaman, dan sesekali meregangkan otot badan.", val: "K" }
+                    { t: "Nama lengkap kenalan baru, namun sangat hafal rupa wajah mereka.", val: "V" },
+                    { t: "Pesan tertulis di chat, namun sangat ingat isi obrolan suara dengannya.", val: "A" },
+                    { t: "Rupa wajah orang baru, namun sangat ingat ejaan nama lengkap mereka.", val: "R" },
+                    { t: "Wajah dan nama, namun sangat ingat aktivitas bersama yang kami lakukan.", val: "K" }
                 ]
             },
             {
-                q: "Saat menghadiri acara seminar atau pemaparan materi umum, saya cenderung...",
+                q: "Ketika guru memberikan arahan penugasan kelompok, aku lebih paham jika:",
                 options: [
-                    { t: "Menatap ke layar untuk menyimak presentasi bagan yang dipaparkan pembicara.", val: "V" },
-                    { t: "Mendengarkan perkataan pemateri dengan tenang tanpa harus selalu melihat layar.", val: "A" },
-                    { t: "Mencatat poin-poin yang penting di buku agenda pribadi.", val: "R" },
-                    { t: "Sering mengubah posisi duduk atau gemar memainkan pena di jemari tangan.", val: "K" }
+                    { t: "Guru menunjuk langsung ke gambar bagan petunjuk kerja di layar depan.", val: "V" },
+                    { t: "Guru mendiktekan instruksi tugas secara lisan dengan suara lantang.", val: "A" },
+                    { t: "Guru membagikan brosur panduan tertulis atau mengirim rincian teks tugas.", val: "R" },
+                    { t: "Guru mengajakku mempraktikkan langkah awal penyelesaiannya langsung.", val: "K" }
                 ]
             },
             {
-                q: "Untuk menguasai cara pengoperasian suatu perangkat lunak yang rumit, saya memilih...",
+                q: "Jika aku harus menunggu antrean kereta api yang cukup lama, aku biasanya:",
                 options: [
-                    { t: "Melihat demonstrasi video instruksional di YouTube.", val: "V" },
-                    { t: "Mengikuti instruksi lisan dari asisten ahli atau tutor pengajar.", val: "A" },
-                    { t: "Membaca teks petunjuk tanya-jawab atau dokumentasi situs web resmi.", val: "R" },
-                    { t: "Membuka langsung aplikasinya dan mencoba setiap opsi menu yang ada secara acak.", val: "K" }
+                    { t: "Mengamati keramaian orang-orang, gaya pakaian, atau poster iklan di stasiun.", val: "V" },
+                    { t: "Mendengarkan playlist lagu di penyuara telinga (*earphone*) atau pengumuman info stasiun.", val: "A" },
+                    { t: "Membaca berita online di ponsel atau tulisan brosur perjalanan kereta.", val: "R" },
+                    { t: "Berjalan mondar-mandir santai, meregangkan badan, atau mengayunkan kaki.", val: "K" }
                 ]
             },
             {
-                q: "Pada umumnya, saya merasa paling cepat memahami suatu ketrampilan baru dari...",
+                q: "Saat membaca artikel baru di internet, aku biasanya langsung melewati:",
                 options: [
-                    { t: "Memerhatikan secara jeli bagaimana orang lain yang kompeten mempraktikkannya.", val: "V" },
-                    { t: "Menerima bimbingan lisan melalui instruksi suara pengajar.", val: "A" },
-                    { t: "Mempelajari analisis teoritis atau langkah-langkah kerja tertulis.", val: "R" },
-                    { t: "Melakukan proses coba-gagal secara mandiri menggunakan tangan.", val: "K" }
+                    { t: "Kumpulan tulisan yang sangat panjang tanpa ada selipan gambar ilustrasi.", val: "V" },
+                    { t: "Video tutorial tanpa teks terjemahan atau penjelas kata lisan.", val: "A" },
+                    { t: "Foto/gambar ilustrasi yang besar tanpa keterangan teks caption di bawahnya.", val: "R" },
+                    { t: "Halaman instruksi yang pasif tanpa tombol interaksi fisik untuk diklik.", val: "K" }
                 ]
             },
             {
-                q: "Ketika pikiran sedang lelah dan penat, saya memilih beristirahat dengan cara...",
+                q: "Saat ingin mencicipi minuman baru di kafe, aku memilih berdasarkan:",
                 options: [
-                    { t: "Melihat-lihat galeri foto pemandangan indah atau berjalan mencari suasana estetis.", val: "V" },
-                    { t: "Mendengarkan musik favorit atau mendengarkan rekaman alam.", val: "A" },
-                    { t: "Membaca artikel informatif, komik, atau menulis jurnal harian.", val: "R" },
-                    { t: "Bersepeda santai, berenang, atau sekadar melakukan relaksasi peregangan fisik.", val: "K" }
+                    { t: "Gradasi warna minumannya yang cerah estetik serta bentuk gelasnya unik.", val: "V" },
+                    { t: "Rekomendasi lisan dari pelayan atau mendengar nama minumannya yang unik.", val: "A" },
+                    { t: "Membaca keterangan isi racikan bahan serta info harga coret di brosur.", val: "R" },
+                    { t: "Sensasi dingin es yang menusuk lidah atau tekstur kesegaran minumannya.", val: "K" }
                 ]
             },
             {
-                q: "Dalam pengerjaan suatu tugas proyek akhir, kepuasan kerja terbesar bagi saya adalah...",
+                q: "Ketika guru mengoreksi tugas karangan (esai) milikku, aku merasa terbantu jika:",
                 options: [
-                    { t: "Hasil kemasan visual dan kerapian proyek terlihat elok serta estetik.", val: "V" },
-                    { t: "Saya mampu menjelaskan fungsi pengerjaan proyek tersebut dengan lancar secara lisan.", val: "A" },
-                    { t: "Laporan analisis tertulis dinilai runtut, sistematis, dan kaya akan teori rujukan.", val: "R" },
-                    { t: "Komponen fisik atau hasil kerja proyek terbukti beroperasi andal saat dicoba.", val: "K" }
+                    { t: "Ada lingkaran coretan warna terang pada baris kalimatku yang keliru.", val: "V" },
+                    { t: "Guru memanggilku ke depan meja lalu menerangkan evaluasinya secara lisan.", val: "A" },
+                    { t: "Ada tulisan catatan perbaikan yang rinci di pojok kertas tugasku.", val: "R" },
+                    { t: "Guru mengajakku menuliskan perbaikan kata yang benar di papan tulis bersama.", val: "K" }
                 ]
             }
         ];
@@ -970,7 +970,7 @@
                 });
 
                 if (!allAnswered) {
-                    alert("Isi seluruh soal pada halaman ini sebelum menekan tombol Selanjutnya.");
+                    alert("Selesaikan seluruh pertanyaan pada halaman ini terlebih dahulu.");
                     return;
                 }
             }
@@ -1049,18 +1049,16 @@
             generateRecommendation(dominantKey);
             drawPieChart(pV, pA, pR, pK);
 
-            // Simpan Ke Browser lokal dengan format yang diminta
+            // Menyimpan dengan detail rincian format yang diminta
             saveResultToLocal(studentInfo.name, studentInfo.class, studentInfo.major, pV, pA, pR, pK, dominantLabel);
 
             document.getElementById('results-card').style.display = 'block';
             window.scrollTo({ top: 100, behavior: 'smooth' });
         }
 
-        // Fungsi Menggambar Pie Chart via Pustaka Chart.js
         function drawPieChart(v, a, r, k) {
             const ctx = document.getElementById('resultChart').getContext('2d');
             
-            // Hancurkan instansi chart lama jika ada agar tidak tumpang tindih
             if (myChartInstance !== null) {
                 myChartInstance.destroy();
             }
@@ -1073,9 +1071,9 @@
                         data: [v, a, r, k],
                         backgroundColor: [
                             '#3b82f6', // Biru terang (V)
-                            '#10b981', // Hijau emerald (A)
-                            '#f59e0b', // Amber/Oranye (R)
-                            '#ec4899'  // Pink magenta (K)
+                            '#10b981', // Hijau (A)
+                            '#f59e0b', // Amber (R)
+                            '#ec4899'  // Pink (K)
                         ],
                         borderWidth: 2,
                         borderColor: '#ffffff'
@@ -1112,26 +1110,25 @@
             let text = "";
 
             if (key === 'V') {
-                text = `<strong>Rekomendasi Strategi Belajar Visual:</strong><br>
-                        Gunakan diagram alur, gambar representasi, atau infografis berwarna sebagai media utama belajar Anda. Coba rangkum materi teoretis ke dalam bentuk peta pikiran (*mind mapping*). Visualisasi ini membantu ingatan jangka panjang Anda bekerja lebih optimal.`;
+                text = `<strong>Rekomendasi Belajar Gaya Visual:</strong><br>
+                        Gunakan grafik, peta konsep, bagan alur, dan kode warna dalam catatan harian Anda. Memvisualisasikan materi teoretis dengan mencoret kertas atau menggambar skema membantu ingatan bekerja jauh lebih efektif dalam memahami suatu konsep.`;
             } else if (key === 'A') {
-                text = `<strong>Rekomendasi Strategi Belajar Auditori:</strong><br>
-                        Maksimalkan kepekaan pendengaran Anda. Terlibatlah secara aktif pada forum diskusi, jelaskan materi dengan melafalkannya bersuara keras ke diri sendiri, atau manfaatkan rekaman lisan guru untuk didengarkan berulang kali sebagai bahan ulasan.`;
+                text = `<strong>Rekomendasi Belajar Gaya Auditori:</strong><br>
+                        Maksimalkan konsentrasi belajar lewat mendengarkan presentasi, berdiskusi kelompok, membaca materi bersuara keras, atau menjelaskan materi pelajaran tersebut kembali kepada rekan belajar secara lisan.`;
             } else if (key === 'R') {
-                text = `<strong>Rekomendasi Strategi Belajar Read/Write (Membaca/Menulis):</strong><br>
-                        Kekuatan utama Anda ada pada kata-kata tertulis. Latihlah pemahaman dengan membuat ringkasan terperinci berupa poin-poin terstruktur. Bacalah modul rujukan, e-book, atau carilah literatur teks tepercaya untuk dibaca secara tenang.`;
+                text = `<strong>Rekomendasi Belajar Gaya Read/Write (Membaca/Menulis):</strong><br>
+                        Gunakan rangkuman teks secara terstruktur, modul bacaan lengkap, atau kartu kosa kata tertulis. Menuliskan ulang materi secara sistematis dalam bentuk daftar poin (*bullet points*) akan memperkuat daya tangkap Anda.`;
             } else if (key === 'K') {
-                text = `<strong>Rekomendasi Strategi Belajar Kinestetik:</strong><br>
-                        Anda adalah pembelajar berbasis pengalaman langsung. Strategi paling efektif bagi Anda adalah dengan meraba, mengutak-atik, serta menyimulasikan langsung prosedur kerja di laboratorium maupun di lapangan. Jangan ragu belajar lewat metode uji coba fisik secara teratur.`;
+                text = `<strong>Rekomendasi Belajar Gaya Kinestetik:</strong><br>
+                        Latihlah pemahaman Anda melalui aktivitas fisik secara nyata. Praktik langsung, bermain peran (*role-play*), mengoperasikan instrumen, membongkar-pasang peraga, serta menguji coba kasus secara aktif merupakan cara optimal Anda dalam belajar.`;
             } else {
-                text = `<strong>Rekomendasi Strategi Belajar Multimodal (Campuran):</strong><br>
-                        Kekuatan Anda terletak pada kemampuan beradaptasi menggunakan berbagai gaya belajar sekaligus. Sesuaikan cara belajar Anda dengan karakter materi pelajaran yang sedang dihadapi (misalnya: membaca teks panduan terlebih dulu, dilanjutkan dengan peragaan praktik langsung).`;
+                text = `<strong>Rekomendasi Belajar Gaya Multimodal (Campuran):</strong><br>
+                        Gaya belajar Anda sangat fleksibel karena menggabungkan berbagai modalitas secara dinamis. Anda bisa mulai dengan membaca modul teori terlebih dulu, berdiskusi lisan dengan teman, kemudian mempraktikkannya secara fisik agar hasilnya lebih maksimal.`;
             }
 
             recEl.innerHTML = text;
         }
 
-        // Menyimpan Hasil Ke Local Storage dengan struktur data lengkap yang rapi
         function saveResultToLocal(name, sClass, major, v, a, r, k, dominant) {
             let history = localStorage.getItem('vark_results_gm');
             if (!history) {
@@ -1142,7 +1139,7 @@
 
             const dateStr = new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
             
-            // Format Penyimpanan Baru
+            // Format Penyimpanan Baru lengkap: Nama, Kelas, Jurusan, Hasil (4 Tipe & Prosentase)
             const record = {
                 name: name,
                 class: sClass,
@@ -1180,7 +1177,6 @@
                         const div = document.createElement('div');
                         div.className = 'history-item';
                         
-                        // Ekstraksi nilai persentase agar terlihat jelas di riwayat
                         const detailHasil = `V:${item.results.v}%, A:${item.results.a}%, R:${item.results.r}%, K:${item.results.k}%`;
                         
                         div.innerHTML = `
@@ -1200,7 +1196,7 @@
         }
 
         function restartTest() {
-            if (confirm("Apakah Anda ingin memulai ulang pengujian gaya belajar untuk peserta baru?")) {
+            if (confirm("Apakah Anda ingin mengulangi pengujian gaya belajar baru?")) {
                 clearInterval(countdownInterval);
                 timeRemaining = 60 * 60;
                 currentPage = 1;
