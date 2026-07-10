@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tes Gaya Belajar - SMK Gajah Mada Banyuwangi</title>
+    <!-- Google Font & Chart.js -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-blue: #001f54;
+            --secondary-pink: #ec4899;
+            --accent-yellow: #facc15;
+            --neutral-dark: #1e293b;
+            --neutral-light: #f8fafc;
+            --white: #ffffff;
+            --gray-border: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--neutral-dark);
+            line-height: 1.6;
+        }
+
+        /* Header Area */
+        header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #0a3d91 100%);
+            color: var(--white);
+            padding: 2.5rem 1rem;
+            text-align: center;
+            border-bottom: 5px solid var(--secondary-pink);
+            position: relative;
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 90px;
+            height: auto;
+            filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.2));
+        }
+
+        .school-name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--white);
+            text-transform: uppercase;
+        }
+
+        .test-title {
+            font-size: 1.15rem;
+            font-weight: 500;
+            color: var(--accent-yellow);
+            text-transform: uppercase;
+        }
+
+        /* Waktu & Countdown Widget */
+        .time-widget {
+            display: flex;
+            justify-content: space-between;
+            background: var(--white);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: -1.5rem auto 1.5rem auto;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-left: 4px solid var(--secondary-pink);
+            position: relative;
+            z-index: 10;
+        }
+
+        .current-time {
+            color: var(--neutral-dark);
+        }
+
+        .countdown-timer {
+            color: var(--secondary-pink);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        /* Form Registrasi */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--primary-blue);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary-pink);
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.15);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .progress-bar-bg {
+            background-color: #e2e8f0;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background: linear-gradient(90deg, var(--secondary-pink) 0%, #f472b6 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Soal-soal */
+        .question-card {
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .question-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+        }
+
+        .option-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--gray-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .option-label:hover {
+            background-color: #fdf2f8;
+            border-color: var(--secondary-pink);
+        }
+
+        .option-label input[type="radio"] {
+            margin-top: 0.25rem;
+            accent-color: var(--secondary-pink);
+        }
+
+        .option-label.selected {
+            background-color: #fce7f3;
+            border-color: var(--secondary-pink);
+            font-weight: 500;
+        }
+
+        /* Navigasi */
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: #0c3374;
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: var(--neutral-dark);
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+
+        .btn-accent {
+            background-color: var(--secondary-pink);
+            color: var(--white);
+        }
+
+        .btn-accent:hover {
+            background-color: #db2777;
+        }
+
+        /* Dashboard Hasil Tes */
+        .results-container {
+            display: none;
+        }
+
+        .dashboard-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        @media (min-width: 768px) {
+            .dashboard-layout {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+            .stats-column {
+                flex: 1;
+            }
+            .chart-column {
+                flex: 1;
+                position: sticky;
+                top: 20px;
+            }
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .result-item {
+            background: var(--neutral-light);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            border-top: 4px solid var(--gray-border);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+        }
+
+        .result-item.v { border-top-color: #3b82f6; }
+        .result-item.a { border-top-color: #10b981; }
+        .result-item.r { border-top-color: #f59e0b; }
+        .result-item.k { border-top-color: #ec4899; }
+
+        .result-percentage {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--neutral-dark);
+        }
+
+        .result-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--primary-blue);
+        }
+
+        .chart-wrapper {
+            background-color: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px dashed var(--gray-border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        .dominant-badge {
+            background-color: var(--accent-yellow);
+            color: var(--primary-blue);
+            padding: 0.5rem 1.25rem;
+            border-radius: 20px;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Riwayat Penyimpanan */
+        .history-card {
+            margin-top: 2rem;
+            border-top: 2px dashed var(--gray-border);
+            padding-top: 1.5rem;
+        }
+
+        .history-item {
+            font-size: 0.82rem;
+            padding: 0.75rem;
+            border-bottom: 1px solid #edf2f7;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            background-color: var(--neutral-light);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (min-width: 600px) {
+            .history-item {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        /* Responsif */
+        @media (max-width: 600px) {
+            .logo {
+                width: 70px;
+            }
+            .school-name {
+                font-size: 1.2rem;
+            }
+            .test-title {
+                font-size: 0.95rem;
+            }
+            .time-widget {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+                margin-top: -1rem;
+            }
+            .card {
+                padding: 1.25rem;
+            }
+            .btn-container {
+                flex-direction: column-reverse;
+            }
+            .btn {
+                width: 100%;
+            }
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img class="logo" src="gm.jpg" alt="Logo SMK Gajah Mada" onerror="this.src='https://placehold.co/100x100/001f54/ffffff?text=GM'">
+            <div class="school-name">SMK Gajah Mada Banyuwangi</div>
+            <div class="test-title">Tes Gaya Belajar Siswa</div>
+        </div>
+    </header>
+
+    <!-- Bar Informasi Waktu Terkini dan Sisa Waktu Pengerjaan -->
+    <div class="time-widget">
+        <div class="current-time" id="current-time">Waktu Terkini: --:--:--</div>
+        <div class="countdown-timer" id="countdown-timer">Sisa Waktu: 60:00</div>
+    </div>
+
+    <div class="container">
+
+        <!-- Form Data Diri (Sesi Awal) -->
+        <div class="card" id="reg-card">
+            <h3 style="margin-bottom: 1.5rem; color: var(--primary-blue); border-bottom: 2px solid var(--neutral-light); padding-bottom: 0.5rem;">Identitas Peserta Tes</h3>
+            <form id="reg-form" onsubmit="startTest(event)">
+                <div class="form-group">
+                    <label for="student-name">Nama Lengkap</label>
+                    <input type="text" id="student-name" class="form-control" placeholder="Masukkan nama lengkap Anda" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="student-class">Kelas</label>
+                    <input type="text" id="student-class" class="form-control" placeholder="Contoh: X TKR 1, XI DKV 2" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="student-major">Konsentrasi Keahlian / Jurusan</label>
+                    <select id="student-major" class="form-control" required>
+                        <option value="" disabled selected>Pilih Konsentrasi Keahlian</option>
+                        <option value="Teknik Kendaraan Ringan (TKR)">Teknik Kendaraan Ringan (TKR)</option>
+                        <option value="Teknik Audio Video (TAV)">Teknik Audio Video (TAV)</option>
+                        <option value="Teknik Sepeda Motor (TSM)">Teknik Sepeda Motor (TSM)</option>
+                        <option value="Teknik Komputer dan Jaringan (TKJ)">Teknik Komputer dan Jaringan (TKJ)</option>
+                        <option value="Desain Komunikasi Visual (DKV)">Desain Komunikasi Visual (DKV)</option>
+                        <option value="Akuntansi Keuangan Lembaga (AKL)">Akuntansi Keuangan Lembaga (AKL)</option>
+                        <option value="Manajemen Perkantoran (MP)">Manajemen Perkantoran (MP)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-accent" style="width: 100%; margin-top: 1rem;">Mulai Tes Sekarang</button>
+            </form>
+
+            <div class="history-card" id="history-section" style="display:none;">
+                <h4 style="font-size: 0.9rem; margin-bottom: 0.8rem; color: var(--primary-blue);">Hasil Tes Terakhir di Browser Ini:</h4>
+                <div id="history-list"></div>
+            </div>
+        </div>
+
+        <!-- Progress Bar Pengisian -->
+        <div class="progress-container" id="progress-container">
+            <div class="progress-text">
+                <span id="progress-step-text">Halaman 1 dari 6</span>
+                <span id="progress-percent">0% Selesai</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-bar-fill"></div>
+            </div>
+        </div>
+
+        <!-- Wadah Soal Tes -->
+        <form id="test-form">
+            <div id="questions-wrapper">
+                <!-- Pertanyaan akan digenerate otomatis oleh Javascript -->
+            </div>
+
+            <!-- Tombol Navigasi Halaman Tes -->
+            <div class="btn-container" id="nav-container" style="display: none;">
+                <button type="button" class="btn btn-secondary" id="btn-prev" onclick="changePage(-1)" disabled>Sebelumnya</button>
+                <button type="button" class="btn btn-primary" id="btn-next" onclick="changePage(1)">Selanjutnya</button>
+                <button type="button" class="btn btn-accent" id="btn-submit" onclick="submitTest()" style="display: none;">Kirim Jawaban</button>
+            </div>
+        </form>
+
+        <!-- Dashboard Tampilan Hasil Tes -->
+        <div class="card results-container" id="results-card">
+            <h3 style="color: var(--primary-blue); text-align: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.75rem;">Hasil Pemetaan Gaya Belajar</h3>
+            
+            <div style="margin-top: 1rem; font-size: 0.95rem; text-align: center;">
+                Halo <strong id="res-student-name"></strong> (<span id="res-student-meta"></span>), berikut adalah hasil analisis kecenderungan gaya belajar Anda:
+            </div>
+
+            <div class="dashboard-layout">
+                <!-- Kolom Skor -->
+                <div class="stats-column">
+                    <div class="results-grid">
+                        <div class="result-item v">
+                            <div class="result-label">Visual (V)</div>
+                            <div class="result-percentage" id="score-v">0%</div>
+                        </div>
+                        <div class="result-item a">
+                            <div class="result-label">Auditori (A)</div>
+                            <div class="result-percentage" id="score-a">0%</div>
+                        </div>
+                        <div class="result-item r">
+                            <div class="result-label">Read/Write (R)</div>
+                            <div class="result-percentage" id="score-r">0%</div>
+                        </div>
+                        <div class="result-item k">
+                            <div class="result-label">Kinestetik (K)</div>
+                            <div class="result-percentage" id="score-k">0%</div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <div style="font-size: 0.95rem; font-weight: 600; color:#64748b;">Gaya Belajar Dominan:</div>
+                        <div class="dominant-badge" id="dominant-style">-</div>
+                    </div>
+                </div>
+
+                <!-- Kolom Chart -->
+                <div class="chart-column">
+                    <div class="chart-wrapper">
+                        <canvas id="resultChart" width="250" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="style-recommendation" style="margin-top: 1.5rem; padding: 1.25rem; background-color: #f8fafc; border-radius: 8px; font-size: 0.9rem; text-align: justify; border-left: 4px solid var(--primary-blue);">
+                <!-- Rekomendasi di-generate dinamis -->
+            </div>
+
+            <button type="button" class="btn btn-primary" onclick="restartTest()" style="margin-top: 2rem; width: 100%;">Ulangi Tes Baru</button>
+        </div>
+
+    </div>
+
+    <script>
+        // Data Soal Tes Bersifat Umum (30 Pertanyaan)
+        // Opsi 1 = V (Visual), Opsi 2 = A (Auditori), Opsi 3 = R (Read/Write), Opsi 4 = K (Kinestetik)
+        const questionsData = [
+            {
+                q: "Saat mempelajari cara kerja sesuatu yang baru (seperti alat, aplikasi, atau prosedur kerja), saya lebih memilih untuk...",
+                options: [
+                    { t: "Mengamati diagram alur, gambar panduan, atau petunjuk bentuk grafis.", val: "V" },
+                    { t: "Mendengarkan instruksi penjelasan lisan secara langsung dari orang lain.", val: "A" },
+                    { t: "Membaca penjelasan detail tertulis dari modul atau buku panduan.", val: "R" },
+                    { t: "Mencoba mengotak-atik atau menguji langsung objek tersebut.", val: "K" }
+                ]
+            },
+            {
+                q: "Ketika mencari jalan menuju lokasi baru yang belum pernah saya datangi, saya lebih suka...",
+                options: [
+                    { t: "Membaca peta jalan atau menggunakan peta navigasi visual di GPS.", val: "V" },
+                    { t: "Bertanya langsung kepada warga setempat untuk dipandu petunjuk lisan.", val: "A" },
+                    { t: "Membaca urutan penunjuk jalan tertulis langkah-demi-langkah.", val: "R" },
+                    { t: "Berjalan menyusuri lokasi mengikuti insting spasial atau mengandalkan tanda fisik jalan.", val: "K" }
+                ]
+            },
+            {
+                q: "Di kelas, saya paling mudah menyerap informasi pelajaran jika pengajar...",
+                options: [
+                    { t: "Menampilkan slide presentasi interaktif bergambar, skema, atau video.", val: "V" },
+                    { t: "Menerangkan dengan cerita, diskusi kelompok, atau forum tanya-jawab.", val: "A" },
+                    { t: "Membagikan materi tertulis berupa lembar catatan, rangkuman, atau buku pelajaran.", val: "R" },
+                    { t: "Mengajak melakukan simulasi, praktik fisik, eksperimen, atau aktivitas bergerak.", val: "K" }
+                ]
+            },
+            {
+                q: "Saat menceritakan pengalaman seru kepada rekan saya, cara yang paling natural bagi saya adalah...",
+                options: [
+                    { t: "Memvisualisasikan cerita dengan bahasa tubuh yang berekspresi.", val: "V" },
+                    { t: "Memainkan intonasi suara, tiruan suara objek, dan kecepatan bicara.", val: "A" },
+                    { t: "Menuliskan detail kronologi kejadiannya secara rapi lewat pesan obrolan tertulis.", val: "R" },
+                    { t: "Memperagakan kembali aktivitas gerakan tubuh dari peristiwa tersebut.", val: "K" }
+                ]
+            },
+            {
+                q: "Bila saya mulai merasa bosan dalam pelajaran yang berdurasi panjang, saya biasanya...",
+                options: [
+                    { t: "Menggambar corat-coret sketsa gambar acak di pinggir buku tulis.", val: "V" },
+                    { t: "Mengajak teman sebangku mengobrol atau bersenandung pelan.", val: "A" },
+                    { t: "Membaca artikel bebas, buku lain, atau info tulisan di gawai.", val: "R" },
+                    { t: "Sering mengubah posisi duduk atau sesekali izin berjalan ke toilet.", val: "K" }
+                ]
+            },
+            {
+                q: "Di waktu luang, kegiatan santai yang paling menyenangkan bagi saya adalah...",
+                options: [
+                    { t: "Menonton film, video pendek di internet, atau bermain game visual.", val: "V" },
+                    { t: "Mendengarkan musik, siaran podcast, audio drama, atau mengobrol santai.", val: "A" },
+                    { t: "Membaca novel, buku, artikel berita, atau menulis buku harian.", val: "R" },
+                    { t: "Berolahraga ringan, membuat kerajinan, menari, atau beraktivitas luar ruangan.", val: "K" }
+                ]
+            },
+            {
+                q: "Saat harus mengingat poin-poin penting materi ujian, saya paling efektif dengan cara...",
+                options: [
+                    { t: "Membayangkan tata letak tulisan, warna spidol penjelas, atau gambar di buku.", val: "V" },
+                    { t: "Melafalkan materi tersebut bersuara keras berkali-kali ke diri sendiri.", val: "A" },
+                    { t: "Menuliskan kembali pokok-pokok pikiran materi secara terstruktur di kertas.", val: "R" },
+                    { t: "Berjalan mondar-mandir di ruangan sembari mengingat poin materi.", val: "K" }
+                ]
+            },
+            {
+                q: "Ketika membeli perangkat baru (seperti ponsel atau alat kerja), saya akan...",
+                options: [
+                    { t: "Mencari video ulasan yang memperlihatkan visualisasi fitur produk.", val: "V" },
+                    { t: "Mendengarkan petunjuk lisan dari rekomendasi teman atau penjual.", val: "A" },
+                    { t: "Membaca buku teks instruksi manual spesifikasi produk terlebih dahulu.", val: "R" },
+                    { t: "Langsung menyalakan dan mencoba menekan semua tombol untuk mengetes fungsinya.", val: "K" }
+                ]
+            },
+            {
+                q: "Ketika harus menyelesaikan suatu tugas kelompok, peran yang paling saya nikmati adalah...",
+                options: [
+                    { t: "Merancang presentasi visual, merapikan dokumen kerja, atau mendesain poster proyek.", val: "V" },
+                    { t: "Mewakili kelompok untuk menjelaskan ide secara lisan di depan penguji.", val: "A" },
+                    { t: "Menyusun isi naskah, membuat riset literatur, atau menulis laporan tertulis.", val: "R" },
+                    { t: "Merakit contoh fisik proyek, membuat peraga, atau menguji coba kerja produk.", val: "K" }
+                ]
+            },
+            {
+                q: "Jika suasana hati saya sedang buruk atau marah, ekspresi terdekat saya adalah...",
+                options: [
+                    { t: "Memperlihatkan raut wajah masam atau menghindari pandangan orang lain.", val: "V" },
+                    { t: "Menggerutu kesal, menghela nafas panjang, atau berbicara sendiri dengan nada kesal.", val: "A" },
+                    { t: "Menulis curahan hati di kertas catatan pribadi atau buku harian.", val: "R" },
+                    { t: "Mengepalkan tangan, mengetuk-ngetukkan jari, atau berjalan keluar menjauh.", val: "K" }
+                ]
+            },
+            {
+                q: "Saat mendengarkan penyampaian yang panjang, konsentrasi saya paling mudah terganggu oleh...",
+                options: [
+                    { t: "Gerakan orang lalu-lalang atau kilatan cahaya di sekitar.", val: "V" },
+                    { t: "Suara bising, bisikan orang di samping, atau gemuruh kipas angin.", val: "A" },
+                    { t: "Melihat coretan tulisan acak atau buku yang tumpuk-menumpuk berantakan.", val: "R" },
+                    { t: "Kursi yang tidak nyaman untuk diduduki lama atau suhu udara yang kurang pas.", val: "K" }
+                ]
+            },
+            {
+                q: "Bila saya harus mengerjakan tugas mandiri yang sulit, saya sangat terbantu jika...",
+                options: [
+                    { t: "Diberikan contoh bentuk gambar atau karya akhir yang sudah jadi.", val: "V" },
+                    { t: "Diberikan panduan lisan yang menerangkan poin evaluasinya secara ringkas.", val: "A" },
+                    { t: "Diberikan selembar kertas petunjuk kerja tertulis langkah demi langkah.", val: "R" },
+                    { t: "Dipandu secara praktis pada langkah awal untuk langsung dicoba.", val: "K" }
+                ]
+            },
+            {
+                q: "Ketika sedang melakukan kegiatan uji coba atau pembelajaran mandiri, saya merasa percaya diri jika...",
+                options: [
+                    { t: "Melihat video peragaan contoh pengerjaan terlebih dahulu.", val: "V" },
+                    { t: "Mendengarkan petunjuk rambu lisan dari instruktur.", val: "A" },
+                    { t: "Membaca modul bacaan kerja atau panduan tertulis.", val: "R" },
+                    { t: "Langsung memegang media kerja dan mencoba melakukannya secara nyata.", val: "K" }
+                ]
+            },
+            {
+                q: "Untuk mengingat suatu istilah asing atau nama bagian-bagian komponen, saya memilih...",
+                options: [
+                    { t: "Menggunakan kartu belajar (flashcard) dengan petunjuk visual.", val: "V" },
+                    { t: "Mendengarkan rekaman pelafalan kata tersebut berulang kali.", val: "A" },
+                    { t: "Menulis ulang kosakata beserta definisinya di selembar kertas.", val: "R" },
+                    { t: "Mencoba memperagakan fisik atau gerakan yang menggambarkan arti kata itu.", val: "K" }
+                ]
+            },
+            {
+                q: "Ketika berada di suatu tempat pameran atau kunjungan belajar, saya cenderung...",
+                options: [
+                    { t: "Memerhatikan tata letak pajangan, dekorasi visual, atau pajangan poster.", val: "V" },
+                    { t: "Mendengarkan penjelasan pengisi pameran atau narasi audio pengarah.", val: "A" },
+                    { t: "Membaca deskripsi teks penjelasan yang ada di setiap sudut stan.", val: "R" },
+                    { t: "Menguji interaksi contoh produk yang dipajang dengan tangan saya.", val: "K" }
+                ]
+            },
+            {
+                q: "Saya biasanya lebih cepat mengenali atau mengingat seseorang dari...",
+                options: [
+                    { t: "Rupa wajah atau cara berpakaiannya, meskipun kadang lupa namanya.", val: "V" },
+                    { t: "Ciri suara atau logat bicaranya yang khas.", val: "A" },
+                    { t: "Tulisan nama di kartu pengenal atau detail biodata tertulisnya.", val: "R" },
+                    { t: "Gaya bersalaman atau interaksi aktivitas bersama dengannya.", val: "K" }
+                ]
+            },
+            {
+                q: "Ketika berhadapan dengan konsep perhitungan atau analisis logika rumit, saya terbantu jika...",
+                options: [
+                    { t: "Konsep digambarkan dalam diagram alir, skema, atau grafik berwarna.", val: "V" },
+                    { t: "Langkah penyelesaian dibacakan secara lisan setahap demi setahap.", val: "A" },
+                    { t: "Membaca urutan tulisan rumus dan penjelasan runtut di buku cetak.", val: "R" },
+                    { t: "Menuliskan coretan hitungan secara berulang-ulang di atas kertas buram.", val: "K" }
+                ]
+            },
+            {
+                q: "Saat harus mempersiapkan presentasi di depan kelas, saya cenderung...",
+                options: [
+                    { t: "Menghias tampilan slide presentasi agar rapi dan kaya elemen visual.", val: "V" },
+                    { t: "Berlatih melafalkan pidato atau merekam suara sendiri untuk koreksi tempo.", val: "A" },
+                    { t: "Menulis naskah lengkap atau draf teks pembuka hingga penutup.", val: "R" },
+                    { t: "Berlatih gerakan tubuh, interaksi panggung, dan bahasa tangan yang fleksibel.", val: "K" }
+                ]
+            },
+            {
+                q: "Saat membaca suatu bacaan (seperti artikel atau buku cerita), saya paling menikmati bagian...",
+                options: [
+                    { t: "Deskripsi tulisan yang melukiskan rupa suasana atau latar tempat kejadian.", val: "V" },
+                    { t: "Percakapan atau dialog menarik antar tokoh yang tertulis.", val: "A" },
+                    { t: "Gaya penulisan kalimat yang tertata rapi dan kaya akan informasi.", val: "R" },
+                    { t: "Alur kejadian yang berjalan dinamis, penuh aksi, dan ketegangan.", val: "K" }
+                ]
+            },
+            {
+                q: "Metode diskusi kelompok belajar yang paling saya sukai adalah...",
+                options: [
+                    { t: "Membagikan materi menggunakan peta pikiran (mind map) warna-warni di kertas.", val: "V" },
+                    { t: "Melakukan adu pendapat atau tanya jawab secara lisan secara bergantian.", val: "A" },
+                    { t: "Membaca lembar pendapat tertulis masing-masing anggota kemudian dirangkum.", val: "R" },
+                    { t: "Merancang alat sederhana, menyimulasikan peran, atau membuat model fisik.", val: "K" }
+                ]
+            },
+            {
+                q: "Saat mencoba mengingat nomor kontak atau kode sandi, saya lebih memilih...",
+                options: [
+                    { t: "Mengingat-ingat letak angka tersebut saat diketikkan atau wujud fisiknya.", val: "V" },
+                    { t: "Melafalkan angka demi angka dengan intonasi ucapan tertentu.", val: "A" },
+                    { t: "Menuliskan deretan angka tersebut di selembar kertas catatan kecil.", val: "R" },
+                    { t: "Mengetikkan langsung tombol-tombol angka tersebut berulang kali di papan tombol.", val: "K" }
+                ]
+            },
+            {
+                q: "Ketika diberikan perbaikan atas kesalahan dalam tugas saya, saya lebih senang bila...",
+                options: [
+                    { t: "Kesalahan saya ditandai dengan warna kontras agar langsung dikenali kerusakannya.", val: "V" },
+                    { t: "Dipanggil secara personal lalu mendengarkan kritik penjelasan lisan pengajar.", val: "A" },
+                    { t: "Menerima catatan ulasan kritik tertulis di lembar tugas secara rinci.", val: "R" },
+                    { t: "Ditunjukkan secara langsung prosedur perbaikan yang benar untuk ditiru fisik.", val: "K" }
+                ]
+            },
+            {
+                q: "Saya merasa sangat terlibat aktif di dalam suatu forum pelajaran ketika pengajar...",
+                options: [
+                    { t: "Menayangkan animasi, infografis, atau dokumenter pendek.", val: "V" },
+                    { t: "Mengisahkan pengalaman profesionalnya secara lisan.", val: "A" },
+                    { t: "Memberikan waktu tenang mandiri untuk menganalisis teks bacaan modul.", val: "R" },
+                    { t: "Mengajak bermain peran (role-play), melakukan penataan instrumen, atau gerak fisik.", val: "K" }
+                ]
+            },
+            {
+                q: "Sebelum memulai kegiatan piknik atau perjalanan wisata, saya terlebih dahulu...",
+                options: [
+                    { t: "Melihat galeri foto atau video keindahan lokasi tujuan.", val: "V" },
+                    { t: "Mengobrol lewat telepon dengan rekan perjalanan untuk menyusun rute.", val: "A" },
+                    { t: "Menulis urutan perjalanan (itinerary) yang terencana rapi di kertas.", val: "R" },
+                    { t: "Mempersiapkan barang bawaan dalam tas dan menguji ketangguhan fisik alat bawa.", val: "K" }
+                ]
+            },
+            {
+                q: "Jika belajar mandiri di rumah, hal terpenting yang menjaga konsentrasi saya tetap stabil adalah...",
+                options: [
+                    { t: "Pencahayaan ruang belajar yang cukup terang dan rapi dipandang mata.", val: "V" },
+                    { t: "Suasana sekitar yang sunyi dari bising knalpot atau obrolan orang.", val: "A" },
+                    { t: "Kelengkapan modul cetak, buku tulis, dan literatur pendukung.", val: "R" },
+                    { t: "Duduk di kursi yang empuk, nyaman, dan sesekali meregangkan otot badan.", val: "K" }
+                ]
+            },
+            {
+                q: "Saat menghadiri acara seminar atau pemaparan materi umum, saya cenderung...",
+                options: [
+                    { t: "Menatap ke layar untuk menyimak presentasi bagan yang dipaparkan pembicara.", val: "V" },
+                    { t: "Mendengarkan perkataan pemateri dengan tenang tanpa harus selalu melihat layar.", val: "A" },
+                    { t: "Mencatat poin-poin yang penting di buku agenda pribadi.", val: "R" },
+                    { t: "Sering mengubah posisi duduk atau gemar memainkan pena di jemari tangan.", val: "K" }
+                ]
+            },
+            {
+                q: "Untuk menguasai cara pengoperasian suatu perangkat lunak yang rumit, saya memilih...",
+                options: [
+                    { t: "Melihat demonstrasi video instruksional di YouTube.", val: "V" },
+                    { t: "Mengikuti instruksi lisan dari asisten ahli atau tutor pengajar.", val: "A" },
+                    { t: "Membaca teks petunjuk tanya-jawab atau dokumentasi situs web resmi.", val: "R" },
+                    { t: "Membuka langsung aplikasinya dan mencoba setiap opsi menu yang ada secara acak.", val: "K" }
+                ]
+            },
+            {
+                q: "Pada umumnya, saya merasa paling cepat memahami suatu ketrampilan baru dari...",
+                options: [
+                    { t: "Memerhatikan secara jeli bagaimana orang lain yang kompeten mempraktikkannya.", val: "V" },
+                    { t: "Menerima bimbingan lisan melalui instruksi suara pengajar.", val: "A" },
+                    { t: "Mempelajari analisis teoritis atau langkah-langkah kerja tertulis.", val: "R" },
+                    { t: "Melakukan proses coba-gagal secara mandiri menggunakan tangan.", val: "K" }
+                ]
+            },
+            {
+                q: "Ketika pikiran sedang lelah dan penat, saya memilih beristirahat dengan cara...",
+                options: [
+                    { t: "Melihat-lihat galeri foto pemandangan indah atau berjalan mencari suasana estetis.", val: "V" },
+                    { t: "Mendengarkan musik favorit atau mendengarkan rekaman alam.", val: "A" },
+                    { t: "Membaca artikel informatif, komik, atau menulis jurnal harian.", val: "R" },
+                    { t: "Bersepeda santai, berenang, atau sekadar melakukan relaksasi peregangan fisik.", val: "K" }
+                ]
+            },
+            {
+                q: "Dalam pengerjaan suatu tugas proyek akhir, kepuasan kerja terbesar bagi saya adalah...",
+                options: [
+                    { t: "Hasil kemasan visual dan kerapian proyek terlihat elok serta estetik.", val: "V" },
+                    { t: "Saya mampu menjelaskan fungsi pengerjaan proyek tersebut dengan lancar secara lisan.", val: "A" },
+                    { t: "Laporan analisis tertulis dinilai runtut, sistematis, dan kaya akan teori rujukan.", val: "R" },
+                    { t: "Komponen fisik atau hasil kerja proyek terbukti beroperasi andal saat dicoba.", val: "K" }
+                ]
+            }
+        ];
+
+        const QUESTIONS_PER_PAGE = 5;
+        let currentPage = 1;
+        const totalPages = Math.ceil(questionsData.length / QUESTIONS_PER_PAGE);
+        let studentInfo = {};
+        let countdownInterval;
+        let clockInterval;
+        let timeRemaining = 60 * 60; // 60 menit dalam detik
+        let myChartInstance = null;
+
+        window.onload = function() {
+            startClock();
+            generateQuestions();
+            loadHistory();
+        };
+
+        function startClock() {
+            const timeEl = document.getElementById('current-time');
+            function updateClock() {
+                const now = new Date();
+                const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+                const dateStr = now.toLocaleDateString('id-ID', options);
+                const timeStr = now.toLocaleTimeString('id-ID');
+                timeEl.innerHTML = `Waktu Terkini: ${dateStr} - ${timeStr} WIB`;
+            }
+            updateClock();
+            clockInterval = setInterval(updateClock, 1000);
+        }
+
+        function startCountdown() {
+            const timerEl = document.getElementById('countdown-timer');
+            countdownInterval = setInterval(() => {
+                if (timeRemaining <= 0) {
+                    clearInterval(countdownInterval);
+                    timerEl.innerHTML = "Waktu Habis!";
+                    alert("Waktu pengerjaan 60 menit telah habis. Lembar jawaban Anda akan dikirim secara otomatis.");
+                    submitTest(true); 
+                } else {
+                    timeRemaining--;
+                    const minutes = Math.floor(timeRemaining / 60);
+                    const seconds = timeRemaining % 60;
+                    timerEl.innerHTML = `Sisa Waktu: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+
+        function generateQuestions() {
+            const wrapper = document.getElementById('questions-wrapper');
+            wrapper.innerHTML = "";
+
+            questionsData.forEach((qObj, index) => {
+                const pageNum = Math.ceil((index + 1) / QUESTIONS_PER_PAGE);
+                
+                const qCard = document.createElement('div');
+                qCard.className = `card question-card q-page-${pageNum}`;
+                qCard.id = `q-card-${index}`;
+
+                const qTitle = document.createElement('div');
+                qTitle.className = 'question-title';
+                qTitle.innerHTML = `${index + 1}. ${qObj.q}`;
+                qCard.appendChild(qTitle);
+
+                const optionCont = document.createElement('div');
+                optionCont.className = 'option-container';
+
+                qObj.options.forEach((opt) => {
+                    const label = document.createElement('label');
+                    label.className = 'option-label';
+                    label.onclick = function() {
+                        selectOption(index, label);
+                    };
+
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = opt.val;
+                    input.required = true;
+
+                    const textSpan = document.createElement('span');
+                    textSpan.textContent = opt.t;
+
+                    label.appendChild(input);
+                    label.appendChild(textSpan);
+                    optionCont.appendChild(label);
+                });
+
+                qCard.appendChild(optionCont);
+                wrapper.appendChild(qCard);
+            });
+        }
+
+        function selectOption(qIdx, selectedLabel) {
+            const card = document.getElementById(`q-card-${qIdx}`);
+            const labels = card.querySelectorAll('.option-label');
+            labels.forEach(l => l.classList.remove('selected'));
+
+            selectedLabel.classList.add('selected');
+            const radio = selectedLabel.querySelector('input[type="radio"]');
+            radio.checked = true;
+
+            updateProgressBar();
+        }
+
+        function startTest(e) {
+            e.preventDefault();
+            
+            studentInfo.name = document.getElementById('student-name').value.trim();
+            studentInfo.class = document.getElementById('student-class').value.trim();
+            studentInfo.major = document.getElementById('student-major').value;
+
+            if (!studentInfo.name || !studentInfo.class || !studentInfo.major) {
+                alert("Mohon lengkapi data identitas.");
+                return;
+            }
+
+            document.getElementById('reg-card').style.display = 'none';
+            document.getElementById('progress-container').style.display = 'block';
+            document.getElementById('nav-container').style.display = 'flex';
+            
+            showPage(1);
+            startCountdown();
+        }
+
+        function showPage(page) {
+            currentPage = page;
+
+            const allCards = document.querySelectorAll('.question-card');
+            allCards.forEach(c => c.style.display = 'none');
+
+            const pageCards = document.querySelectorAll(`.q-page-${page}`);
+            pageCards.forEach(c => c.style.display = 'block');
+
+            document.getElementById('btn-prev').disabled = (currentPage === 1);
+            if (currentPage === totalPages) {
+                document.getElementById('btn-next').style.display = 'none';
+                document.getElementById('btn-submit').style.display = 'inline-flex';
+            } else {
+                document.getElementById('btn-next').style.display = 'inline-flex';
+                document.getElementById('btn-submit').style.display = 'none';
+            }
+
+            document.getElementById('progress-step-text').textContent = `Halaman ${currentPage} dari ${totalPages}`;
+            window.scrollTo({ top: 150, behavior: 'smooth' });
+            updateProgressBar();
+        }
+
+        function changePage(direction) {
+            if (direction === 1) {
+                const currentCards = document.querySelectorAll(`.q-page-${currentPage}`);
+                let allAnswered = true;
+                currentCards.forEach(card => {
+                    const checked = card.querySelector('input[type="radio"]:checked');
+                    if (!checked) allAnswered = false;
+                });
+
+                if (!allAnswered) {
+                    alert("Isi seluruh soal pada halaman ini sebelum menekan tombol Selanjutnya.");
+                    return;
+                }
+            }
+
+            const targetPage = currentPage + direction;
+            if (targetPage >= 1 && targetPage <= totalPages) {
+                showPage(targetPage);
+            }
+        }
+
+        function updateProgressBar() {
+            const totalQuestions = questionsData.length;
+            const answeredCount = document.querySelectorAll('input[type="radio"]:checked').length;
+            const percentage = Math.round((answeredCount / totalQuestions) * 100);
+
+            document.getElementById('progress-bar-fill').style.width = `${percentage}%`;
+            document.getElementById('progress-percent').textContent = `${percentage}% Selesai`;
+        }
+
+        function submitTest(force = false) {
+            const totalQuestions = questionsData.length;
+            const answered = document.querySelectorAll('input[type="radio"]:checked');
+
+            if (!force && answered.length < totalQuestions) {
+                alert(`Anda baru menyelesaikan ${answered.length} dari ${totalQuestions} pertanyaan.`);
+                return;
+            }
+
+            clearInterval(countdownInterval);
+
+            let counts = { V: 0, A: 0, R: 0, K: 0 };
+            answered.forEach(input => {
+                if (counts[input.value] !== undefined) {
+                    counts[input.value]++;
+                }
+            });
+
+            const actualTotal = answered.length || 1; 
+
+            const pV = Math.round((counts.V / actualTotal) * 100);
+            const pA = Math.round((counts.A / actualTotal) * 100);
+            const pR = Math.round((counts.R / actualTotal) * 100);
+            const pK = Math.round((counts.K / actualTotal) * 100);
+
+            document.getElementById('test-form').style.display = 'none';
+            document.getElementById('progress-container').style.display = 'none';
+            document.getElementById('nav-container').style.display = 'none';
+
+            document.getElementById('res-student-name').textContent = studentInfo.name;
+            document.getElementById('res-student-meta').textContent = `Kelas ${studentInfo.class} - ${studentInfo.major}`;
+
+            document.getElementById('score-v').textContent = `${pV}%`;
+            document.getElementById('score-a').textContent = `${pA}%`;
+            document.getElementById('score-r').textContent = `${pR}%`;
+            document.getElementById('score-k').textContent = `${pK}%`;
+
+            let scoresArray = [
+                { key: 'V', label: 'Visual (V)', value: pV },
+                { key: 'A', label: 'Auditori (A)', value: pA },
+                { key: 'R', label: 'Read/Write (R)', value: pR },
+                { key: 'K', label: 'Kinestetik (K)', value: pK }
+            ];
+
+            scoresArray.sort((a, b) => b.value - a.value);
+            let dominant = scoresArray[0];
+
+            let dominantLabel = dominant.label;
+            let dominantKey = dominant.key;
+            if (scoresArray[0].value - scoresArray[1].value <= 5) {
+                dominantLabel = `Campuran / Multimodal (${scoresArray[0].key} & ${scoresArray[1].key})`;
+                dominantKey = 'Multimodal';
+            }
+
+            document.getElementById('dominant-style').textContent = dominantLabel;
+
+            generateRecommendation(dominantKey);
+            drawPieChart(pV, pA, pR, pK);
+
+            // Simpan Ke Browser lokal dengan format yang diminta
+            saveResultToLocal(studentInfo.name, studentInfo.class, studentInfo.major, pV, pA, pR, pK, dominantLabel);
+
+            document.getElementById('results-card').style.display = 'block';
+            window.scrollTo({ top: 100, behavior: 'smooth' });
+        }
+
+        // Fungsi Menggambar Pie Chart via Pustaka Chart.js
+        function drawPieChart(v, a, r, k) {
+            const ctx = document.getElementById('resultChart').getContext('2d');
+            
+            // Hancurkan instansi chart lama jika ada agar tidak tumpang tindih
+            if (myChartInstance !== null) {
+                myChartInstance.destroy();
+            }
+
+            myChartInstance = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Visual (V)', 'Auditori (A)', 'Read/Write (R)', 'Kinestetik (K)'],
+                    datasets: [{
+                        data: [v, a, r, k],
+                        backgroundColor: [
+                            '#3b82f6', // Biru terang (V)
+                            '#10b981', // Hijau emerald (A)
+                            '#f59e0b', // Amber/Oranye (R)
+                            '#ec4899'  // Pink magenta (K)
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: "'Poppins', sans-serif",
+                                    size: 11
+                                },
+                                boxWidth: 12
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateRecommendation(key) {
+            const recEl = document.getElementById('style-recommendation');
+            let text = "";
+
+            if (key === 'V') {
+                text = `<strong>Rekomendasi Strategi Belajar Visual:</strong><br>
+                        Gunakan diagram alur, gambar representasi, atau infografis berwarna sebagai media utama belajar Anda. Coba rangkum materi teoretis ke dalam bentuk peta pikiran (*mind mapping*). Visualisasi ini membantu ingatan jangka panjang Anda bekerja lebih optimal.`;
+            } else if (key === 'A') {
+                text = `<strong>Rekomendasi Strategi Belajar Auditori:</strong><br>
+                        Maksimalkan kepekaan pendengaran Anda. Terlibatlah secara aktif pada forum diskusi, jelaskan materi dengan melafalkannya bersuara keras ke diri sendiri, atau manfaatkan rekaman lisan guru untuk didengarkan berulang kali sebagai bahan ulasan.`;
+            } else if (key === 'R') {
+                text = `<strong>Rekomendasi Strategi Belajar Read/Write (Membaca/Menulis):</strong><br>
+                        Kekuatan utama Anda ada pada kata-kata tertulis. Latihlah pemahaman dengan membuat ringkasan terperinci berupa poin-poin terstruktur. Bacalah modul rujukan, e-book, atau carilah literatur teks tepercaya untuk dibaca secara tenang.`;
+            } else if (key === 'K') {
+                text = `<strong>Rekomendasi Strategi Belajar Kinestetik:</strong><br>
+                        Anda adalah pembelajar berbasis pengalaman langsung. Strategi paling efektif bagi Anda adalah dengan meraba, mengutak-atik, serta menyimulasikan langsung prosedur kerja di laboratorium maupun di lapangan. Jangan ragu belajar lewat metode uji coba fisik secara teratur.`;
+            } else {
+                text = `<strong>Rekomendasi Strategi Belajar Multimodal (Campuran):</strong><br>
+                        Kekuatan Anda terletak pada kemampuan beradaptasi menggunakan berbagai gaya belajar sekaligus. Sesuaikan cara belajar Anda dengan karakter materi pelajaran yang sedang dihadapi (misalnya: membaca teks panduan terlebih dulu, dilanjutkan dengan peragaan praktik langsung).`;
+            }
+
+            recEl.innerHTML = text;
+        }
+
+        // Menyimpan Hasil Ke Local Storage dengan struktur data lengkap yang rapi
+        function saveResultToLocal(name, sClass, major, v, a, r, k, dominant) {
+            let history = localStorage.getItem('vark_results_gm');
+            if (!history) {
+                history = [];
+            } else {
+                history = JSON.parse(history);
+            }
+
+            const dateStr = new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+            
+            // Format Penyimpanan Baru
+            const record = {
+                name: name,
+                class: sClass,
+                major: major,
+                results: {
+                    v: v,
+                    a: a,
+                    r: r,
+                    k: k
+                },
+                dominant: dominant,
+                date: dateStr
+            };
+            
+            history.unshift(record);
+            
+            if (history.length > 5) {
+                history.pop();
+            }
+
+            localStorage.setItem('vark_results_gm', JSON.stringify(history));
+        }
+
+        function loadHistory() {
+            const histSec = document.getElementById('history-section');
+            const histList = document.getElementById('history-list');
+            const history = localStorage.getItem('vark_results_gm');
+
+            if (history) {
+                const data = JSON.parse(history);
+                if (data.length > 0) {
+                    histSec.style.display = 'block';
+                    histList.innerHTML = "";
+                    data.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'history-item';
+                        
+                        // Ekstraksi nilai persentase agar terlihat jelas di riwayat
+                        const detailHasil = `V:${item.results.v}%, A:${item.results.a}%, R:${item.results.r}%, K:${item.results.k}%`;
+                        
+                        div.innerHTML = `
+                            <div>
+                                <strong>${item.name}</strong> (${item.class}) - <span style="font-size:0.8rem; color:#475569;">${item.major}</span><br>
+                                <span style="color:var(--secondary-pink); font-weight:600;">Dominan: ${item.dominant}</span> 
+                                <span style="color:#64748b; font-size:0.75rem;">(${detailHasil})</span>
+                            </div>
+                            <div style="color:#94a3b8; font-size:0.75rem; font-weight:600;">${item.date}</div>
+                        `;
+                        histList.appendChild(div);
+                    });
+                }
+            } else {
+                histSec.style.display = 'none';
+            }
+        }
+
+        function restartTest() {
+            if (confirm("Apakah Anda ingin memulai ulang pengujian gaya belajar untuk peserta baru?")) {
+                clearInterval(countdownInterval);
+                timeRemaining = 60 * 60;
+                currentPage = 1;
+                studentInfo = {};
+                
+                document.getElementById('reg-form').reset();
+                document.getElementById('test-form').reset();
+                
+                const selectedLabels = document.querySelectorAll('.option-label.selected');
+                selectedLabels.forEach(l => l.classList.remove('selected'));
+
+                document.getElementById('results-card').style.display = 'none';
+                document.getElementById('reg-card').style.display = 'block';
+                document.getElementById('test-form').style.display = 'block';
+                
+                loadHistory();
+            }
+        }
+    </script>
+</body>
+</html>
