@@ -267,6 +267,32 @@
             background-color: #db2777;
         }
 
+        /* Status Pengiriman Data */
+        .sync-status {
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+            font-weight: 600;
+        }
+        .sync-loading {
+            background-color: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fde68a;
+        }
+        .sync-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .sync-failed {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
         /* Dashboard Hasil Tes */
         .results-container {
             display: none;
@@ -350,33 +376,6 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        /* Riwayat Penyimpanan */
-        .history-card {
-            margin-top: 2rem;
-            border-top: 2px dashed var(--gray-border);
-            padding-top: 1.5rem;
-        }
-
-        .history-item {
-            font-size: 0.82rem;
-            padding: 0.75rem;
-            border-bottom: 1px solid #edf2f7;
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-            background-color: var(--neutral-light);
-            border-radius: 6px;
-            margin-bottom: 0.5rem;
-        }
-
-        @media (min-width: 600px) {
-            .history-item {
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-            }
-        }
-
         /* Responsif */
         @media (max-width: 600px) {
             .logo {
@@ -454,11 +453,6 @@
                 </div>
                 <button type="submit" class="btn btn-accent" style="width: 100%; margin-top: 1rem;">Mulai Tes Sekarang</button>
             </form>
-
-            <div class="history-card" id="history-section" style="display:none;">
-                <h4 style="font-size: 0.9rem; margin-bottom: 0.8rem; color: var(--primary-blue);">Hasil Tes Terakhir di Browser Ini:</h4>
-                <div id="history-list"></div>
-            </div>
         </div>
 
         <!-- Progress Bar Pengisian -->
@@ -493,6 +487,9 @@
             <div style="margin-top: 1rem; font-size: 0.95rem; text-align: center;">
                 Halo <strong id="res-student-name"></strong> (<span id="res-student-meta"></span>), berikut adalah hasil pemetaan gaya belajar Anda:
             </div>
+
+            <!-- Notifikasi Sinkronisasi Google Sheets -->
+            <div id="sync-status" class="sync-status"></div>
 
             <div class="dashboard-layout">
                 <!-- Kolom Skor -->
@@ -540,6 +537,9 @@
     </div>
 
     <script>
+        // MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxR_JFEo5jp0Zrx2v8sAS-My7Gc6JK8-wVaqKIuA-UOxSqm-D3NGLpOfvIXz_8X7uEw/exec"; 
+
         // 30 Pertanyaan Ringan dan Santai tentang Aktivitas Sehari-hari
         // Konsisten: Opsi 1 = V, Opsi 2 = A, Opsi 3 = R, Opsi 4 = K
         const questionsData = [
@@ -643,12 +643,12 @@
                 ]
             },
             {
-                q: "Saat mendengarkan penyampaian teori di kelas, aku paling cepat mengerti jika:",
+                q: "Saat dihadapkan pada komputer baru di laboratorium sekolah, aku spontan:",
                 options: [
-                    { t: "Guru banyak menampilkan gambar ilustrasi visual pendukung di papan tulis.", val: "V" },
-                    { t: "Guru menjelaskan dengan banyak contoh kasus dibalut gaya bicara humoris.", val: "A" },
-                    { t: "Guru membagikan lembar modul berisi ringkasan teks teori secara lengkap.", val: "R" },
-                    { t: "Guru mengajak siswa mengutak-atik model tiruan instrumen sederhana pelajaran.", val: "K" }
+                    { t: "Mengamati kebersihan bodi komputer, desain papan tik, atau gambar layar awal.", val: "V" },
+                    { t: "Mendengarkan bunyi kipas komputer atau melodi sambutan sistem.", val: "A" },
+                    { t: "Membaca teks rincian spesifikasi prosesor yang biasanya ditempel di bodi.", val: "R" },
+                    { t: "Mencoba mengetikkan tombol-tombol pada papan tik untuk merasai kelenturannya.", val: "K" }
                 ]
             },
             {
@@ -663,7 +663,7 @@
             {
                 q: "Jika sedang bermain game tebak kata (charades), aku lebih nyaman dengan peran:",
                 options: [
-                    { t: "Menggambar corak coretan gambar petunjuk di kertas secara cepat.", val: "V" },
+                    { t: "Menggambar corok coretan gambar petunjuk di kertas secara cepat.", val: "V" },
                     { t: "Memberikan klu suara tiruan, desisan, atau menyenandungkan potongan lagu.", val: "A" },
                     { t: "Menuliskan beberapa kata kunci rahasia di kertas sebagai jembatan baca.", val: "R" },
                     { t: "Memperagakan gerakan fisik tubuh secara atraktif agar langsung ditebak.", val: "K" }
@@ -733,12 +733,12 @@
                 ]
             },
             {
-                q: "Saat dihadapkan pada komputer baru di laboratorium sekolah, aku spontan:",
+                q: "Saat mendengarkan penyampaian teori di kelas, aku paling cepat mengerti jika:",
                 options: [
-                    { t: "Mengamati kebersihan bodi komputer, desain papan tik, atau gambar layar awal.", val: "V" },
-                    { t: "Mendengarkan bunyi kipas komputer atau melodi sambutan sistem.", val: "A" },
-                    { t: "Membaca teks rincian spesifikasi prosesor yang biasanya ditempel di bodi.", val: "R" },
-                    { t: "Mencoba mengetikkan tombol-tombol pada papan tik untuk merasai kelenturannya.", val: "K" }
+                    { t: "Guru banyak menampilkan gambar ilustrasi visual pendukung di papan tulis.", val: "V" },
+                    { t: "Guru menjelaskan dengan banyak contoh kasus dibalut gaya bicara humoris.", val: "A" },
+                    { t: "Guru membagikan lembar modul berisi ringkasan teks teori secara lengkap.", val: "R" },
+                    { t: "Guru mengajak siswa mengutak-atik model tiruan instrumen sederhana pelajaran.", val: "K" }
                 ]
             },
             {
@@ -827,7 +827,6 @@
         window.onload = function() {
             startClock();
             generateQuestions();
-            loadHistory();
         };
 
         function startClock() {
@@ -1049,8 +1048,8 @@
             generateRecommendation(dominantKey);
             drawPieChart(pV, pA, pR, pK);
 
-            // Menyimpan dengan detail rincian format yang diminta
-            saveResultToLocal(studentInfo.name, studentInfo.class, studentInfo.major, pV, pA, pR, pK, dominantLabel);
+            // Kirim data langsung ke Google Sheets (Penyimpanan lokal browser dihapus sepenuhnya)
+            sendDataToGoogleSheet(studentInfo.name, studentInfo.class, studentInfo.major, pV, pA, pR, pK, dominantLabel);
 
             document.getElementById('results-card').style.display = 'block';
             window.scrollTo({ top: 100, behavior: 'smooth' });
@@ -1129,70 +1128,48 @@
             recEl.innerHTML = text;
         }
 
-        function saveResultToLocal(name, sClass, major, v, a, r, k, dominant) {
-            let history = localStorage.getItem('vark_results_gm');
-            if (!history) {
-                history = [];
-            } else {
-                history = JSON.parse(history);
+        function sendDataToGoogleSheet(name, sClass, major, v, a, r, k, dominant) {
+            const statusEl = document.getElementById('sync-status');
+            
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === "URL_WEB_APP_ANDA") {
+                statusEl.className = "sync-status sync-failed";
+                statusEl.style.display = "block";
+                statusEl.innerHTML = "Sistem: Gagal menyimpan. URL Google Sheets belum dipasang dengan benar.";
+                return;
             }
 
-            const dateStr = new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
-            
-            // Format Penyimpanan Baru lengkap: Nama, Kelas, Jurusan, Hasil (4 Tipe & Prosentase)
-            const record = {
-                name: name,
-                class: sClass,
-                major: major,
-                results: {
-                    v: v,
-                    a: a,
-                    r: r,
-                    k: k
+            statusEl.className = "sync-status sync-loading";
+            statusEl.style.display = "block";
+            statusEl.innerHTML = "Sedang mengirim dan mengamankan data hasil tes Anda ke Google Sheets...";
+
+            // Membungkus data ke dalam format x-www-form-urlencoded yang sangat bersahabat dengan Google Web App
+            const params = new URLSearchParams();
+            params.append('name', name);
+            params.append('studentClass', sClass);
+            params.append('major', major);
+            params.append('v', v + "%");
+            params.append('a', a + "%");
+            params.append('r', r + "%");
+            params.append('k', k + "%");
+            params.append('dominant', dominant);
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors", // Mengabaikan kendala CORS saat pengiriman data lintas platform
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
                 },
-                dominant: dominant,
-                date: dateStr
-            };
-            
-            history.unshift(record);
-            
-            if (history.length > 5) {
-                history.pop();
-            }
-
-            localStorage.setItem('vark_results_gm', JSON.stringify(history));
-        }
-
-        function loadHistory() {
-            const histSec = document.getElementById('history-section');
-            const histList = document.getElementById('history-list');
-            const history = localStorage.getItem('vark_results_gm');
-
-            if (history) {
-                const data = JSON.parse(history);
-                if (data.length > 0) {
-                    histSec.style.display = 'block';
-                    histList.innerHTML = "";
-                    data.forEach(item => {
-                        const div = document.createElement('div');
-                        div.className = 'history-item';
-                        
-                        const detailHasil = `V:${item.results.v}%, A:${item.results.a}%, R:${item.results.r}%, K:${item.results.k}%`;
-                        
-                        div.innerHTML = `
-                            <div>
-                                <strong>${item.name}</strong> (${item.class}) - <span style="font-size:0.8rem; color:#475569;">${item.major}</span><br>
-                                <span style="color:var(--secondary-pink); font-weight:600;">Dominan: ${item.dominant}</span> 
-                                <span style="color:#64748b; font-size:0.75rem;">(${detailHasil})</span>
-                            </div>
-                            <div style="color:#94a3b8; font-size:0.75rem; font-weight:600;">${item.date}</div>
-                        `;
-                        histList.appendChild(div);
-                    });
-                }
-            } else {
-                histSec.style.display = 'none';
-            }
+                body: params.toString()
+            })
+            .then(() => {
+                statusEl.className = "sync-status sync-success";
+                statusEl.innerHTML = "✓ Berhasil! Data hasil tes Anda telah tersimpan secara aman di Google Sheets SMK Gajah Mada.";
+            })
+            .catch(error => {
+                console.error("Gagal mengirim:", error);
+                statusEl.className = "sync-status sync-failed";
+                statusEl.innerHTML = "⚠️ Terjadi gangguan koneksi. Harap tunjukkan layar hasil ini kepada guru pendamping Anda.";
+            });
         }
 
         function restartTest() {
@@ -1211,8 +1188,7 @@
                 document.getElementById('results-card').style.display = 'none';
                 document.getElementById('reg-card').style.display = 'block';
                 document.getElementById('test-form').style.display = 'block';
-                
-                loadHistory();
+                document.getElementById('sync-status').style.display = 'none';
             }
         }
     </script>
